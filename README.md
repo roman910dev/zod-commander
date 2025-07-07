@@ -16,7 +16,7 @@ const greet = zodCommand({
   name: 'greet',
   description: 'Say hello to someone',
   args: {
-    name: z.string().describe('n;Name of the person to greet'), // 'n;' makes -n an alias
+    name: z.string().describe('Name of the person to greet'),
   },
   opts: {
     excited: z.boolean().default(false).describe('e;Add an exclamation mark'), // 'e;' makes -e an alias
