@@ -8,15 +8,9 @@ importers:
 
   .:
     dependencies:
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      zod:
-        specifier: ^3.25.75
-        version: 3.25.75
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.0.6
@@ -24,9 +18,15 @@ importers:
       '@types/lodash':
         specifier: ^4.17.20
         version: 4.17.20
+      commander:
+        specifier: ^14.0.0
+        version: 14.0.0
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.75
 
 packages:
 

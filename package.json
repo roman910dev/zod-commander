@@ -17,12 +17,12 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",
 		"@types/lodash": "^4.17.20",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"commander": "^14.0.0",
+		"zod": "^3.25.0"
 	},
 	"dependencies": {
-		"commander": "^14.0.0",
-		"lodash": "^4.17.21",
-		"zod": "^3.25.75"
+		"lodash": "^4.17.21"
 	},
 	"packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
 	"main": "dist/index.js",
@@ -42,5 +42,9 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check --apply .",
 		"format": "biome format --write ."
+	},
+	"peerDependencies": {
+		"commander": ">=8 <15",
+		"zod": ">=3.20.0 <4"
 	}
 }
