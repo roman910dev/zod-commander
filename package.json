@@ -1,4 +1,19 @@
 {
+	"name": "zod-commander",
+	"version": "0.0.1",
+	"description": "A TypeScript utility for building type-safe CLI commands using commander and zod.",
+	"author": "Román Via-Dufresne Saus",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/roman910dev/zod-commander.git"
+	},
+	"keywords": [
+		"commander",
+		"zod",
+		"cli",
+		"typescript"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",
 		"@types/lodash": "^4.17.20",
@@ -23,6 +38,9 @@
 		"dist/"
 	],
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"lint": "biome check .",
+		"lint:fix": "biome check --apply .",
+		"format": "biome format --write ."
 	}
 }
