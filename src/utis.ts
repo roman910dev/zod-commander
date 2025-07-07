@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const zodCore = <T>(
+const zodCore = <T>(
 	zod: z.ZodTypeAny,
 	fn: (zod: z.ZodTypeAny) => T,
 ): T => {
@@ -11,13 +11,13 @@ export const zodCore = <T>(
 	return fn(zod)
 }
 
-export const zodEnumVals = (zod: z.ZodTypeAny) =>
+const zodEnumVals = (zod: z.ZodTypeAny) =>
 	zodCore(zod, (zod) => (zod instanceof z.ZodEnum ? zod._def.values : null))
 
-export const zodIsBoolean = (zod: z.ZodTypeAny) =>
+const zodIsBoolean = (zod: z.ZodTypeAny) =>
 	zodCore(zod, (zod) => zod instanceof z.ZodBoolean)
 
-export const zodDefault = <Output, Def extends z.ZodTypeDef, Input>(
+const zodDefault = <Output, Def extends z.ZodTypeDef, Input>(
 	zod: z.ZodType<Output, Def, Input>,
 ): Input | undefined =>
 	zod instanceof z.ZodEffects
@@ -25,3 +25,12 @@ export const zodDefault = <Output, Def extends z.ZodTypeDef, Input>(
 		: zod instanceof z.ZodDefault
 			? zod._def.defaultValue()
 			: undefined
+
+const utils = {
+	zodCore,
+	zodEnumVals,
+	zodIsBoolean,
+	zodDefault,
+}
+
+export default utils

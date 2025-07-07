@@ -8,7 +8,7 @@ import {
 import kebabCase from 'lodash/kebabCase'
 import type { z } from 'zod'
 
-import { zodDefault, zodEnumVals, zodIsBoolean } from './utis'
+import utils from './utis'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 
@@ -38,8 +38,8 @@ const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
 export const zodArgument = (key: string, zod: z.ZodTypeAny) => {
 	const flag = zod.isOptional() ? `[${key}]` : `<${key}>`
 	const arg = new Argument(flag, zod.description).argParser(zodParser(zod))
-	if (zodDefault(zod)) arg.default(zod.parse(zodDefault(zod)))
-	const choices = zodEnumVals(zod)
+	if (utils.zodDefault(zod)) arg.default(zod.parse(utils.zodDefault(zod)))
+	const choices = utils.zodEnumVals(zod)
 	if (choices) arg.choices(choices)
 	return arg
 }
@@ -50,13 +50,13 @@ export const zodOption = (key: string, zod: z.ZodTypeAny) => {
 	const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key
 	if (key.includes('_')) [key] = key.split('_')
 	key = kebabCase(key)
-	const isBoolean = zodIsBoolean(zod)
+	const isBoolean = utils.zodIsBoolean(zod)
 	const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`
 	const flags = abbr ? `-${abbr}, ${flag}` : flag
 	const opt = new Option(flags, description).argParser(zodParser(zod, 'opt'))
-	if (zodDefault(zod)) opt.default(zod.parse(zodDefault(zod)))
+	if (utils.zodDefault(zod)) opt.default(zod.parse(utils.zodDefault(zod)))
 	if (isBoolean) opt.optional = true
-	const choices = zodEnumVals(zod)
+	const choices = utils.zodEnumVals(zod)
 	if (choices) opt.choices(choices)
 	return opt
 }
