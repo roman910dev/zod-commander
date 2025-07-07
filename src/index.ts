@@ -16,15 +16,17 @@ type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
 
+export type ZodCommandAction<A extends z.ZodRawShape, O extends z.ZodRawShape> = (
+	args: z.infer<z.ZodObject<A>>,
+	opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>,
+) => Promise<void> | void
+
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
 	name: string
 	description?: string
 	args?: A
 	opts?: O
-	action: (
-		args: z.infer<z.ZodObject<A>>,
-		opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>,
-	) => Promise<void> | void
+	action: ZodCommandAction<A, O>
 }
 
 const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
