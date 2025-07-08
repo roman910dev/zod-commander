@@ -18,6 +18,7 @@
 		"@biomejs/biome": "^2.0.6",
 		"@types/lodash": "^4.17.20",
 		"commander": "^14.0.0",
+		"husky": "^9.1.7",
 		"typescript": "^5.8.3",
 		"zod": "^3.25.0"
 	},
@@ -40,9 +41,11 @@
 	"scripts": {
 		"build": "tsc",
 		"lint": "biome check .",
-		"lint:fix": "biome check --apply .",
+		"lint:fix": "biome check --fix --formatter-enabled=false .",
 		"format": "biome format --write .",
-		"prepublishOnly": "npm run build"
+		"ci": "biome ci --threads=4",
+		"prepublishOnly": "npm run build",
+		"prepare": "husky"
 	},
 	"publishConfig": {
 		"access": "public"
