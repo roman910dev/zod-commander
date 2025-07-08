@@ -16,7 +16,10 @@ type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
 
-export type ZodCommandAction<A extends z.ZodRawShape, O extends z.ZodRawShape> = (
+export type ZodCommandAction<
+	A extends z.ZodRawShape,
+	O extends z.ZodRawShape,
+> = (
 	args: z.infer<z.ZodObject<A>>,
 	opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>,
 ) => Promise<void> | void

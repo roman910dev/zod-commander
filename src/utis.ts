@@ -1,9 +1,6 @@
 import { z } from 'zod'
 
-const zodCore = <T>(
-	zod: z.ZodTypeAny,
-	fn: (zod: z.ZodTypeAny) => T,
-): T => {
+const zodCore = <T>(zod: z.ZodTypeAny, fn: (zod: z.ZodTypeAny) => T): T => {
 	const types = [z.ZodDefault, z.ZodNullable, z.ZodOptional]
 	for (const type of types)
 		if (zod instanceof type) return zodCore(zod._def.innerType, fn)
