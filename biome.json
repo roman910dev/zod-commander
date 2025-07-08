@@ -6,8 +6,7 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false,
-		"includes": ["!dist"]
+		"includes": ["**", "!dist/**", "!node_modules/**"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -16,7 +15,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"suspicious": {
+				"noConsole": "warn"
+			}
 		}
 	},
 	"javascript": {
