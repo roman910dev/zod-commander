@@ -19,6 +19,7 @@
 		"@types/lodash": "^4.17.20",
 		"commander": "^14.0.0",
 		"husky": "^9.1.7",
+		"lint-staged": "^16.1.2",
 		"typescript": "^5.8.3",
 		"zod": "^3.25.0"
 	},
@@ -46,6 +47,11 @@
 		"ci": "biome ci --threads=4",
 		"prepublishOnly": "npm run build",
 		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.ts": [
+			"tsc --noEmit && biome ci --threads=4"
+		]
 	},
 	"publishConfig": {
 		"access": "public"

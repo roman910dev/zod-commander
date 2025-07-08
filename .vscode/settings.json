@@ -2,5 +2,8 @@
 	"editor.defaultFormatter": "biomejs.biome",
 	"editor.formatOnSave": true,
 	"eslint.enable": false,
-	"prettier.enable": false
+	"prettier.enable": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit"
+	}
 }

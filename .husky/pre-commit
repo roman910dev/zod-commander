@@ -1,1 +1,1 @@
-pnpm run ci
+pnpm lint-staged
