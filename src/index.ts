@@ -8,7 +8,7 @@ import {
 import kebabCase from 'lodash/kebabCase'
 import type { z } from 'zod'
 
-import utils from './utis'
+import utils from './utils'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 
