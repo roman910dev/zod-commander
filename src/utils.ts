@@ -8,10 +8,10 @@ const zodCore = <T>(zod: z.ZodTypeAny, fn: (zod: z.ZodTypeAny) => T): T => {
 	return fn(zod)
 }
 
-const zodEnumVals = (zod: z.ZodTypeAny) =>
+const zodEnumVals = (zod: z.ZodTypeAny): string[] | null =>
 	zodCore(zod, (zod) => (zod instanceof z.ZodEnum ? zod._def.values : null))
 
-const zodIsBoolean = (zod: z.ZodTypeAny) =>
+const zodIsBoolean = (zod: z.ZodTypeAny): boolean =>
 	zodCore(zod, (zod) => zod instanceof z.ZodBoolean)
 
 const zodDefault = <Output, Def extends z.ZodTypeDef, Input>(
