@@ -48,11 +48,6 @@
 		"prepublishOnly": "npm run build",
 		"prepare": "husky"
 	},
-	"lint-staged": {
-		"*.ts": [
-			"tsc --noEmit && biome ci --threads=4"
-		]
-	},
 	"publishConfig": {
 		"access": "public"
 	},
