@@ -4,6 +4,9 @@ type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S;
 type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
     [Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key];
 };
+type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};
 /**
  * The action function signature for a Zod-powered command.
  * @template A - ZodRawShape for arguments
@@ -12,13 +15,13 @@ type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
  * @param opts - Parsed and validated options (with key normalization)
  * @returns A Promise or void
  */
-export type ZodCommandAction<A extends z.ZodRawShape, O extends z.ZodRawShape> = (args: z.infer<z.ZodObject<A>>, opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>) => Promise<void> | void;
+export type ZodCommandAction<A extends z.ZodRawShape, O extends z.ZodRawShape> = ZodCommandProps<A, O>['action'];
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
     name: string;
     description?: string;
     args?: A;
     opts?: O;
-    action: ZodCommandAction<A, O>;
+    action: (args: Prettify<z.infer<z.ZodObject<A>>>, opts: Prettify<z.infer<z.ZodObject<ReplaceKeyTypes<O>>>>) => Promise<void> | void;
 };
 /**
  * Creates a Commander.js Argument from a Zod schema.

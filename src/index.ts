@@ -7,7 +7,6 @@ import {
 } from 'commander'
 import kebabCase from 'lodash/kebabCase'
 import type { z } from 'zod'
-
 import utils from './utils'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
@@ -15,6 +14,10 @@ type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
+
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {}
 
 /**
  * The action function signature for a Zod-powered command.
@@ -27,17 +30,17 @@ type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 export type ZodCommandAction<
 	A extends z.ZodRawShape,
 	O extends z.ZodRawShape,
-> = (
-	args: z.infer<z.ZodObject<A>>,
-	opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>,
-) => Promise<void> | void
+> = ZodCommandProps<A, O>['action']
 
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
 	name: string
 	description?: string
 	args?: A
 	opts?: O
-	action: ZodCommandAction<A, O>
+	action: (
+		args: Prettify<z.infer<z.ZodObject<A>>>,
+		opts: Prettify<z.infer<z.ZodObject<ReplaceKeyTypes<O>>>>,
+	) => Promise<void> | void
 }
 
 const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {

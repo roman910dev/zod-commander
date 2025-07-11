@@ -1,19 +1,19 @@
-import { zodCommand } from '#/index'
 import { describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
+import { zodCommand } from '#/index'
 
 const name = 'cmd'
 
 // const action = (args: Record<string, unknown>, opts: Record<string, unknown>) =>
 // 	console.log(JSON.stringify({ args, opts }, null, 2))
 
-const mkChecker = (): {
+const checker: {
 	args: Record<string, unknown> | undefined
 	opts: Record<string, unknown> | undefined
-} => ({
+} = {
 	args: undefined,
 	opts: undefined,
-})
+}
 
 const action =
 	(obj: Record<string, unknown>) =>
@@ -23,8 +23,7 @@ const action =
 	}
 
 describe('parse', () => {
-	test('parse a number', () => {
-		const checker = mkChecker()
+	test('number', () => {
 		const command = zodCommand({
 			name,
 			args: { number: z.coerce.number() },
@@ -35,8 +34,7 @@ describe('parse', () => {
 		expect(checker.args).toEqual({ number: 910 })
 	})
 
-	describe('parse a flag', () => {
-		const checker = mkChecker()
+	describe('flag', () => {
 		const command = zodCommand({
 			name,
 			opts: { flag: z.boolean().default(false) },
