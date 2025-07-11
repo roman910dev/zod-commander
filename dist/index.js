@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.zodCommand = exports.zodOption = exports.zodArgument = void 0;
 const commander_1 = require("commander");
-const kebabCase_1 = __importDefault(require("lodash/kebabCase"));
 const utils_1 = __importDefault(require("./utils"));
 const zodParser = (zod, opt) => (value) => {
     const result = zod.safeParse(value);
@@ -48,7 +47,6 @@ const zodOption = (key, zod) => {
     const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key;
     if (key.includes('_'))
         [key] = key.split('_');
-    key = (0, kebabCase_1.default)(key);
     const isBoolean = utils_1.default.zodIsBoolean(zod);
     const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`;
     const flags = abbr ? `-${abbr}, ${flag}` : flag;

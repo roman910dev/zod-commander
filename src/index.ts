@@ -5,7 +5,6 @@ import {
 	InvalidOptionArgumentError,
 	Option,
 } from 'commander'
-import kebabCase from 'lodash/kebabCase'
 import type { z } from 'zod'
 import utils from './utils'
 
@@ -80,7 +79,6 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 	const description = abbr ? zod.description.slice(2) : zod.description
 	const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key
 	if (key.includes('_')) [key] = key.split('_')
-	key = kebabCase(key)
 	const isBoolean = utils.zodIsBoolean(zod)
 	const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`
 	const flags = abbr ? `-${abbr}, ${flag}` : flag

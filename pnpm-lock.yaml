@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.0.6
@@ -18,9 +14,6 @@ importers:
       '@jest/globals':
         specifier: ^30.0.4
         version: 30.0.4
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.20
       commander:
         specifier: ^14.0.0
         version: 14.0.0
@@ -423,9 +416,6 @@ packages:
 
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
-
-  '@types/lodash@4.17.20':
-    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
   '@types/node@24.0.13':
     resolution: {integrity: sha512-Qm9OYVOFHFYg3wJoTSrz80hoec5Lia/dPp84do3X7dZvLikQvM1YpmvTBEdIr/e+U8HTkFjLHLnl78K/qjf+jQ==}
@@ -1059,9 +1049,6 @@ packages:
 
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
-
-  lodash@4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
@@ -1939,8 +1926,6 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
 
-  '@types/lodash@4.17.20': {}
-
   '@types/node@24.0.13':
     dependencies:
       undici-types: 7.8.0
@@ -2699,8 +2684,6 @@ snapshots:
       p-locate: 4.1.0
 
   lodash.memoize@4.1.2: {}
-
-  lodash@4.17.21: {}
 
   lru-cache@10.4.3: {}
 
