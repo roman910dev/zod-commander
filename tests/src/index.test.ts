@@ -6,9 +6,6 @@ import { expectExit } from './utils'
 
 const name = 'cmd'
 
-// const action = (args: Record<string, unknown>, opts: Record<string, unknown>) =>
-// 	console.log(JSON.stringify({ args, opts }, null, 2))
-
 const checker: {
 	args: Record<string, unknown> | undefined
 	opts: Record<string, unknown> | undefined
@@ -164,7 +161,7 @@ describe('options', () => {
 				bool: z
 					.enum(['true', 'false'])
 					.transform((v) => v === 'true')
-					.default('true')
+					.optional()
 					.describe('Boolean'),
 			},
 			action: action(checker),
@@ -172,7 +169,7 @@ describe('options', () => {
 
 		test('help', () =>
 			expect(getOptHelp(command, 'bool')).toBe(
-				'Boolean (choices: "true", "false", default: true)',
+				'Boolean (choices: "true", "false")',
 			))
 
 		describe('parse', () => {
@@ -188,7 +185,7 @@ describe('options', () => {
 
 			test('undefined', () => {
 				command.parse(['node', name])
-				expect(checker.opts).toEqual({ bool: true })
+				expect(checker.opts).toEqual({ bool: undefined })
 			})
 		})
 	})
