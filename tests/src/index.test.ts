@@ -51,4 +51,19 @@ describe('parse', () => {
 			expect(checker.opts).toEqual({ flag: false })
 		})
 	})
+
+	describe('optional boolean', () => {
+		const command = zodCommand({
+			name,
+			opts: {
+				bool: z.enum(['true', 'false']).transform((v) => v === 'true'),
+			},
+			action: action(checker),
+		})
+
+		test('true', () => {
+			command.parse(['node', name, '--bool', 'true'])
+			expect(checker.opts).toEqual({ bool: true })
+		})
+	})
 })

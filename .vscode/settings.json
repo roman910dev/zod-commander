@@ -5,5 +5,6 @@
 	"prettier.enable": false,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "explicit"
-	}
+	},
+	"conventionalCommits.scopes": ["types"]
 }
