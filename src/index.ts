@@ -5,9 +5,7 @@ import {
 	InvalidOptionArgumentError,
 	Option,
 } from 'commander'
-import kebabCase from 'lodash/kebabCase'
 import type { z } from 'zod'
-
 import utils from './utils'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
@@ -15,6 +13,10 @@ type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
+
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {}
 
 /**
  * The action function signature for a Zod-powered command.
@@ -27,17 +29,17 @@ type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 export type ZodCommandAction<
 	A extends z.ZodRawShape,
 	O extends z.ZodRawShape,
-> = (
-	args: z.infer<z.ZodObject<A>>,
-	opts: z.infer<z.ZodObject<ReplaceKeyTypes<O>>>,
-) => Promise<void> | void
+> = ZodCommandProps<A, O>['action']
 
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
 	name: string
 	description?: string
 	args?: A
 	opts?: O
-	action: ZodCommandAction<A, O>
+	action: (
+		args: Prettify<z.infer<z.ZodObject<A>>>,
+		opts: Prettify<z.infer<z.ZodObject<ReplaceKeyTypes<O>>>>,
+	) => Promise<void> | void
 }
 
 const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
@@ -57,11 +59,16 @@ const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
  */
 export const zodArgument = (key: string, zod: z.ZodTypeAny): Argument => {
 	const flag = zod.isOptional() ? `[${key}]` : `<${key}>`
-	const arg = new Argument(flag, zod.description).argParser(zodParser(zod))
-	if (utils.zodDefault(zod)) arg.default(zod.parse(utils.zodDefault(zod)))
+	const arg = new Argument(flag, zod.description)
+
+	const def = utils.zodDefault(zod)
+	if (def !== undefined) arg.default(zod.parse(def))
+
 	const choices = utils.zodEnumVals(zod)
 	if (choices) arg.choices(choices)
-	return arg
+
+	// parsing must be done at the end to override default parsers
+	return arg.argParser(zodParser(zod))
 }
 
 /**
@@ -77,16 +84,23 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 	const description = abbr ? zod.description.slice(2) : zod.description
 	const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key
 	if (key.includes('_')) [key] = key.split('_')
-	key = kebabCase(key)
 	const isBoolean = utils.zodIsBoolean(zod)
-	const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`
+	const flag = `--${key}${isBoolean ? '' : ` <${arg}>`}`
 	const flags = abbr ? `-${abbr}, ${flag}` : flag
-	const opt = new Option(flags, description).argParser(zodParser(zod, 'opt'))
-	if (utils.zodDefault(zod)) opt.default(zod.parse(utils.zodDefault(zod)))
+	const opt = new Option(flags, description)
+
+	// required for boolean flags
 	if (isBoolean) opt.optional = true
+	else if (!zod.isOptional()) opt.makeOptionMandatory()
+
+	const def = utils.zodDefault(zod)
+	if (def !== undefined) opt.default(zod.parse(def))
+
 	const choices = utils.zodEnumVals(zod)
 	if (choices) opt.choices(choices)
-	return opt
+
+	// parsing must be done at the end to override default parsers
+	return opt.argParser(zodParser(zod, 'opt'))
 }
 
 /**
@@ -117,6 +131,5 @@ export const zodCommand = <A extends z.ZodRawShape, O extends z.ZodRawShape>({
 		>
 		await action(resultArgs, resultOpts)
 	})
-	command.configureHelp({ showGlobalOptions: true })
 	return command
 }
