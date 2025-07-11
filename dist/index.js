@@ -50,11 +50,14 @@ const zodOption = (key, zod) => {
     if (key.includes('_'))
         [key] = key.split('_');
     const isBoolean = utils_1.default.zodIsBoolean(zod);
-    const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`;
+    const flag = `--${key}${isBoolean ? '' : ` <${arg}>`}`;
     const flags = abbr ? `-${abbr}, ${flag}` : flag;
     const opt = new commander_1.Option(flags, description);
+    // required for boolean flags
     if (isBoolean)
         opt.optional = true;
+    else if (!zod.isOptional())
+        opt.makeOptionMandatory();
     const def = utils_1.default.zodDefault(zod);
     if (def !== undefined)
         opt.default(zod.parse(def));

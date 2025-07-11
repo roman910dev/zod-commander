@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals'
 import type { Command } from 'commander'
 import { z } from 'zod'
 import { zodCommand } from '#/index'
+import { expectExit } from './utils'
 
 const name = 'cmd'
 
@@ -135,7 +136,64 @@ describe('options', () => {
 		})
 	})
 
+	describe('required string', () => {
+		const command = zodCommand({
+			name,
+			opts: { string: z.string().describe('String') },
+			action: action(checker),
+		})
+
+		test('help', () => expect(getOptHelp(command, 'string')).toBe('String'))
+
+		describe('parse', () => {
+			test('present string', () => {
+				command.parse(['node', name, '--string', 'hello'])
+				expect(checker.opts).toEqual({ string: 'hello' })
+			})
+
+			test('fail: absent string', () => {
+				expectExit(() => command.parse(['node', name]), 1)
+			})
+		})
+	})
+
 	describe('optional boolean', () => {
+		const command = zodCommand({
+			name,
+			opts: {
+				bool: z
+					.enum(['true', 'false'])
+					.transform((v) => v === 'true')
+					.default('true')
+					.describe('Boolean'),
+			},
+			action: action(checker),
+		})
+
+		test('help', () =>
+			expect(getOptHelp(command, 'bool')).toBe(
+				'Boolean (choices: "true", "false", default: true)',
+			))
+
+		describe('parse', () => {
+			test('true', () => {
+				command.parse(['node', name, '--bool', 'true'])
+				expect(checker.opts).toEqual({ bool: true })
+			})
+
+			test('false', () => {
+				command.parse(['node', name, '--bool', 'false'])
+				expect(checker.opts).toEqual({ bool: false })
+			})
+
+			test('undefined', () => {
+				command.parse(['node', name])
+				expect(checker.opts).toEqual({ bool: true })
+			})
+		})
+	})
+
+	describe('required boolean', () => {
 		const command = zodCommand({
 			name,
 			opts: {
@@ -163,9 +221,8 @@ describe('options', () => {
 				expect(checker.opts).toEqual({ bool: false })
 			})
 
-			test('undefined', () => {
-				command.parse(['node', name])
-				expect(checker.opts).toEqual({ bool: undefined })
+			test('fail: undefined', () => {
+				expectExit(() => command.parse(['node', name]), 1)
 			})
 		})
 	})

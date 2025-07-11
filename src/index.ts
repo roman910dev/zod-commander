@@ -85,11 +85,13 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 	const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key
 	if (key.includes('_')) [key] = key.split('_')
 	const isBoolean = utils.zodIsBoolean(zod)
-	const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`
+	const flag = `--${key}${isBoolean ? '' : ` <${arg}>`}`
 	const flags = abbr ? `-${abbr}, ${flag}` : flag
 	const opt = new Option(flags, description)
 
+	// required for boolean flags
 	if (isBoolean) opt.optional = true
+	else if (!zod.isOptional()) opt.makeOptionMandatory()
 
 	const def = utils.zodDefault(zod)
 	if (def !== undefined) opt.default(zod.parse(def))
