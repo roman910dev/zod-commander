@@ -1,6 +1,6 @@
 {
 	"name": "zod-commander",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A TypeScript utility for building type-safe CLI commands using commander and zod.",
 	"author": "Román Via-Dufresne Saus <roman910dev@gmail.com>(https://github.com/roman910dev)",
 	"license": "MIT",
