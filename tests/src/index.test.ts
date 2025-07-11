@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
+import type { Command } from 'commander'
 import { z } from 'zod'
 import { zodCommand } from '#/index'
 
@@ -22,33 +23,63 @@ const action =
 		obj.opts = opts
 	}
 
-describe('parse', () => {
-	test('number', () => {
+const getOptHelp = (command: Command, arg: string) => {
+	const spl = command
+		.helpInformation()
+		.split('\n')
+		.find((line) => line.includes(`--${arg}`))
+		?.split('  ')
+	return spl?.[spl.length - 1]
+}
+
+const getArgHelp = (command: Command, arg: string) => {
+	const spl = command
+		.helpInformation()
+		.split('Arguments:')[1]
+		.split('\n')
+		.map((v) => v.trim())
+		.find((line) => line.startsWith(arg))
+		?.split('  ')
+	return spl?.[spl.length - 1]
+}
+
+describe('argTypes', () => {
+	describe('number', () => {
 		const command = zodCommand({
 			name,
-			args: { number: z.coerce.number() },
+			args: { number: z.coerce.number().describe('Number') },
 			action: action(checker),
 		})
 
-		command.parse(['node', name, '910'])
-		expect(checker.args).toEqual({ number: 910 })
+		console.log(command.helpInformation())
+		test('help', () => expect(getArgHelp(command, 'number')).toBe('Number'))
+
+		test('parse', () => {
+			command.parse(['node', name, '910'])
+			expect(checker.args).toEqual({ number: 910 })
+		})
 	})
 
 	describe('flag', () => {
 		const command = zodCommand({
 			name,
-			opts: { flag: z.boolean().default(false) },
+			opts: { flag: z.boolean().default(false).describe('Flag') },
 			action: action(checker),
 		})
 
-		test('present flag', () => {
-			command.parse(['node', name, '--flag'])
-			expect(checker.opts).toEqual({ flag: true })
-		})
+		test('help', () =>
+			expect(getOptHelp(command, 'flag')).toBe('Flag (default: false)'))
 
-		test('absent flag', () => {
-			command.parse(['node', name])
-			expect(checker.opts).toEqual({ flag: false })
+		describe('parse', () => {
+			test('present flag', () => {
+				command.parse(['node', name, '--flag'])
+				expect(checker.opts).toEqual({ flag: true })
+			})
+
+			test('absent flag', () => {
+				command.parse(['node', name])
+				expect(checker.opts).toEqual({ flag: false })
+			})
 		})
 	})
 
@@ -56,14 +87,34 @@ describe('parse', () => {
 		const command = zodCommand({
 			name,
 			opts: {
-				bool: z.enum(['true', 'false']).transform((v) => v === 'true'),
+				bool: z
+					.enum(['true', 'false'])
+					.transform((v) => v === 'true')
+					.describe('Boolean'),
 			},
 			action: action(checker),
 		})
 
-		test('true', () => {
-			command.parse(['node', name, '--bool', 'true'])
-			expect(checker.opts).toEqual({ bool: true })
+		test('help', () =>
+			expect(getOptHelp(command, 'bool')).toBe(
+				'Boolean (choices: "true", "false")',
+			))
+
+		describe('parse', () => {
+			test('true', () => {
+				command.parse(['node', name, '--bool', 'true'])
+				expect(checker.opts).toEqual({ bool: true })
+			})
+
+			test('false', () => {
+				command.parse(['node', name, '--bool', 'false'])
+				expect(checker.opts).toEqual({ bool: false })
+			})
+
+			test('undefined', () => {
+				command.parse(['node', name])
+				expect(checker.opts).toEqual({ bool: undefined })
+			})
 		})
 	})
 })
