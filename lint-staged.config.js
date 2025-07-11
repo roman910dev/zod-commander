@@ -1,3 +1,7 @@
 export default {
-	'./src/**/*.ts': [() => 'pnpm tsc --noEmit', 'biome ci --threads=4'],
+	'./src/**/*.ts': [
+		() => 'pnpm build',
+		'pnpm biome ci --threads=4',
+		'pnpm test',
+	],
 }

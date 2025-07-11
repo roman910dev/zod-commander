@@ -16,10 +16,13 @@
 	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",
+		"@jest/globals": "^30.0.4",
 		"@types/lodash": "^4.17.20",
 		"commander": "^14.0.0",
 		"husky": "^9.1.7",
+		"jest": "^30.0.4",
 		"lint-staged": "^16.1.2",
+		"ts-jest": "^29.4.0",
 		"typescript": "^5.8.3",
 		"zod": "^3.25.0"
 	},
@@ -39,14 +42,18 @@
 	"files": [
 		"dist/"
 	],
+	"imports": {
+		"#/*": "./src/*"
+	},
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc --project tsconfig.build.json",
 		"lint": "biome check .",
 		"lint:fix": "biome check --fix --formatter-enabled=false .",
 		"format": "biome format --write .",
 		"ci": "biome ci --threads=4",
 		"prepublishOnly": "npm run build",
-		"prepare": "husky"
+		"prepare": "husky",
+		"test": "jest"
 	},
 	"publishConfig": {
 		"access": "public"
