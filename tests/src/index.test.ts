@@ -43,7 +43,7 @@ const getArgHelp = (command: Command, arg: string) => {
 	return spl?.[spl.length - 1]
 }
 
-describe('argTypes', () => {
+describe('arguments', () => {
 	describe('number', () => {
 		const command = zodCommand({
 			name,
@@ -51,12 +51,64 @@ describe('argTypes', () => {
 			action: action(checker),
 		})
 
-		console.log(command.helpInformation())
 		test('help', () => expect(getArgHelp(command, 'number')).toBe('Number'))
 
 		test('parse', () => {
 			command.parse(['node', name, '910'])
 			expect(checker.args).toEqual({ number: 910 })
+		})
+	})
+
+	describe('optional boolean', () => {
+		const command = zodCommand({
+			name,
+			args: {
+				bool: z
+					.enum(['true', 'false'])
+					.transform((v) => v === 'true')
+					.optional()
+					.describe('Boolean'),
+			},
+			action: action(checker),
+		})
+
+		test('help', () =>
+			expect(getArgHelp(command, 'bool')).toBe(
+				'Boolean (choices: "true", "false")',
+			))
+
+		describe('parse', () => {
+			test('true', () => {
+				command.parse(['node', name, 'true'])
+				expect(checker.args).toEqual({ bool: true })
+			})
+
+			test('false', () => {
+				command.parse(['node', name, 'false'])
+				expect(checker.args).toEqual({ bool: false })
+			})
+
+			test('undefined', () => {
+				command.parse(['node', name])
+				expect(checker.args).toEqual({ bool: undefined })
+			})
+		})
+	})
+})
+
+describe('options', () => {
+	describe('number', () => {
+		const command = zodCommand({
+			name,
+			opts: { number: z.coerce.number().describe('Number') },
+			action: action(checker),
+		})
+
+		test('help', () => expect(getOptHelp(command, 'number')).toBe('Number'))
+
+		test('parse', () => {
+			command.parse(['node', name, '--number', '910'])
+			expect(checker.opts).toEqual({ number: 910 })
 		})
 	})
 

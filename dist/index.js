@@ -24,13 +24,15 @@ const zodParser = (zod, opt) => (value) => {
  */
 const zodArgument = (key, zod) => {
     const flag = zod.isOptional() ? `[${key}]` : `<${key}>`;
-    const arg = new commander_1.Argument(flag, zod.description).argParser(zodParser(zod));
-    if (utils_1.default.zodDefault(zod))
-        arg.default(zod.parse(utils_1.default.zodDefault(zod)));
+    const arg = new commander_1.Argument(flag, zod.description);
+    const def = utils_1.default.zodDefault(zod);
+    if (def !== undefined)
+        arg.default(zod.parse(def));
     const choices = utils_1.default.zodEnumVals(zod);
     if (choices)
         arg.choices(choices);
-    return arg;
+    // parsing must be done at the end to override default parsers
+    return arg.argParser(zodParser(zod));
 };
 exports.zodArgument = zodArgument;
 /**
@@ -51,11 +53,11 @@ const zodOption = (key, zod) => {
     const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`;
     const flags = abbr ? `-${abbr}, ${flag}` : flag;
     const opt = new commander_1.Option(flags, description);
+    if (isBoolean)
+        opt.optional = true;
     const def = utils_1.default.zodDefault(zod);
     if (def !== undefined)
         opt.default(zod.parse(def));
-    if (isBoolean)
-        opt.optional = true;
     const choices = utils_1.default.zodEnumVals(zod);
     if (choices)
         opt.choices(choices);
