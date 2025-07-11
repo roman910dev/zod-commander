@@ -82,7 +82,8 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 	const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`
 	const flags = abbr ? `-${abbr}, ${flag}` : flag
 	const opt = new Option(flags, description).argParser(zodParser(zod, 'opt'))
-	if (utils.zodDefault(zod)) opt.default(zod.parse(utils.zodDefault(zod)))
+	const def = utils.zodDefault(zod)
+	if (def !== undefined) opt.default(zod.parse(def))
 	if (isBoolean) opt.optional = true
 	const choices = utils.zodEnumVals(zod)
 	if (choices) opt.choices(choices)

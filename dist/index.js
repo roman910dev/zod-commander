@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.zodCommand = exports.zodOption = exports.zodArgument = void 0;
 const commander_1 = require("commander");
 const kebabCase_1 = __importDefault(require("lodash/kebabCase"));
-const utis_1 = __importDefault(require("./utis"));
+const utils_1 = __importDefault(require("./utils"));
 const zodParser = (zod, opt) => (value) => {
     const result = zod.safeParse(value);
     if (result.success)
@@ -16,17 +16,32 @@ const zodParser = (zod, opt) => (value) => {
         throw new commander_1.InvalidOptionArgumentError(msg);
     throw new commander_1.InvalidArgumentError(msg);
 };
+/**
+ * Creates a Commander.js Argument from a Zod schema.
+ * Handles optionality, default values, and enum choices.
+ * @param key - The argument name
+ * @param zod - The Zod schema for the argument
+ * @returns A Commander Argument instance
+ */
 const zodArgument = (key, zod) => {
     const flag = zod.isOptional() ? `[${key}]` : `<${key}>`;
     const arg = new commander_1.Argument(flag, zod.description).argParser(zodParser(zod));
-    if (utis_1.default.zodDefault(zod))
-        arg.default(zod.parse(utis_1.default.zodDefault(zod)));
-    const choices = utis_1.default.zodEnumVals(zod);
+    if (utils_1.default.zodDefault(zod))
+        arg.default(zod.parse(utils_1.default.zodDefault(zod)));
+    const choices = utils_1.default.zodEnumVals(zod);
     if (choices)
         arg.choices(choices);
     return arg;
 };
 exports.zodArgument = zodArgument;
+/**
+ * Creates a Commander.js Option from a Zod schema.
+ * Handles optionality, default values, enum choices, and boolean flags.
+ * Supports short flags via description prefix (e.g., 's;...').
+ * @param key - The option name (can include underscores for grouping)
+ * @param zod - The Zod schema for the option
+ * @returns A Commander Option instance
+ */
 const zodOption = (key, zod) => {
     const abbr = zod.description?.match(/^(\w);/)?.[1];
     const description = abbr ? zod.description.slice(2) : zod.description;
@@ -34,20 +49,29 @@ const zodOption = (key, zod) => {
     if (key.includes('_'))
         [key] = key.split('_');
     key = (0, kebabCase_1.default)(key);
-    const isBoolean = utis_1.default.zodIsBoolean(zod);
+    const isBoolean = utils_1.default.zodIsBoolean(zod);
     const flag = `--${key}${isBoolean ? '' : zod.isOptional() ? ` [${arg}]` : ` <${arg}>`}`;
     const flags = abbr ? `-${abbr}, ${flag}` : flag;
     const opt = new commander_1.Option(flags, description).argParser(zodParser(zod, 'opt'));
-    if (utis_1.default.zodDefault(zod))
-        opt.default(zod.parse(utis_1.default.zodDefault(zod)));
+    const def = utils_1.default.zodDefault(zod);
+    if (def !== undefined)
+        opt.default(zod.parse(def));
     if (isBoolean)
         opt.optional = true;
-    const choices = utis_1.default.zodEnumVals(zod);
+    const choices = utils_1.default.zodEnumVals(zod);
     if (choices)
         opt.choices(choices);
     return opt;
 };
 exports.zodOption = zodOption;
+/**
+ * Defines a Commander.js Command using Zod schemas for arguments and options.
+ * Automatically wires up parsing, validation, and help configuration.
+ * @template A - ZodRawShape for arguments
+ * @template O - ZodRawShape for options
+ * @param props - Command properties (name, description, args, opts, action)
+ * @returns A Commander Command instance
+ */
 const zodCommand = ({ name, description, args, opts, action, }) => {
     const command = new commander_1.Command(name);
     if (description)

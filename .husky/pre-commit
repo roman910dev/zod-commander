@@ -1,1 +1,3 @@
-pnpm lint-staged
+pnpm build
+pnpm biome ci --threads=4
+pnpm test
