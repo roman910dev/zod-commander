@@ -89,7 +89,6 @@ const zodCommand = ({ name, description, args, opts, action, }) => {
         const resultOpts = all[Object.keys(args ?? {}).length];
         await action(resultArgs, resultOpts);
     });
-    command.configureHelp({ showGlobalOptions: true });
     return command;
 };
 exports.zodCommand = zodCommand;

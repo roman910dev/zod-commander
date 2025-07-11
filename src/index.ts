@@ -131,6 +131,5 @@ export const zodCommand = <A extends z.ZodRawShape, O extends z.ZodRawShape>({
 		>
 		await action(resultArgs, resultOpts)
 	})
-	command.configureHelp({ showGlobalOptions: true })
 	return command
 }
