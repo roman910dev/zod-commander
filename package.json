@@ -43,13 +43,16 @@
 	},
 	"scripts": {
 		"build": "tsc --project tsconfig.build.json",
-		"lint": "biome check .",
-		"lint:fix": "biome check --fix --formatter-enabled=false .",
-		"format": "biome format --write .",
+		"check": "biome check .",
+		"fix": "biome check . --write",
+		"format": "biome format . --write",
+		"full-check": "pnpm ts && pnpm check",
+		"lint": "biome lint .",
 		"ci": "biome ci --threads=4",
 		"prepublishOnly": "npm run build",
 		"prepare": "husky",
-		"test": "jest"
+		"test": "jest",
+		"ts": "tsc --noEmit"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -57,5 +60,6 @@
 	"peerDependencies": {
 		"commander": ">=8 <15",
 		"zod": ">=3.20.0 <4"
-	}
+	},
+	"type": "module"
 }

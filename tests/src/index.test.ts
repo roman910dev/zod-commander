@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals'
 import type { Command } from 'commander'
 import { z } from 'zod'
-import { zodCommand } from '#/index'
-import { expectExit } from './utils'
+import { zodCommand } from '../../src/index.js'
+import { expectExit } from './utils.js'
 
 const name = 'cmd'
 
