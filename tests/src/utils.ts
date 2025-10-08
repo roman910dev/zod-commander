@@ -1,7 +1,7 @@
-import { expect, jest } from '@jest/globals'
+import { expect, vi } from 'vitest'
 
 export function expectExit(fun: () => void, code?: number) {
-	const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+	const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {
 		throw new Error(`process.exit`)
 	})
 	expect(fun).toThrow('process.exit')

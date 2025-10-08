@@ -16,23 +16,24 @@
 	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.6",
-		"@jest/globals": "^30.0.4",
 		"@types/node": "^22.16.3",
 		"commander": "^14.0.0",
 		"husky": "^9.1.7",
-		"jest": "^30.0.4",
-		"ts-jest": "^29.4.0",
+		"tsup": "^8.5.0",
 		"typescript": "^5.8.3",
+		"vitest": "^3.2.4",
 		"zod": "^3.25.0"
 	},
 	"packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.cjs",
+			"default": "./dist/index.js"
 		}
 	},
 	"files": [
@@ -42,14 +43,17 @@
 		"#/*": "./src/*"
 	},
 	"scripts": {
-		"build": "tsc --project tsconfig.build.json",
-		"lint": "biome check .",
-		"lint:fix": "biome check --fix --formatter-enabled=false .",
-		"format": "biome format --write .",
+		"build": "tsup",
+		"check": "biome check .",
+		"fix": "biome check . --write",
+		"format": "biome format . --write",
+		"full-check": "pnpm ts && pnpm check",
+		"lint": "biome lint .",
 		"ci": "biome ci --threads=4",
 		"prepublishOnly": "npm run build",
 		"prepare": "husky",
-		"test": "jest"
+		"test": "vitest",
+		"ts": "tsc --noEmit"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -57,5 +61,6 @@
 	"peerDependencies": {
 		"commander": ">=8 <15",
 		"zod": ">=3.20.0 <4"
-	}
+	},
+	"type": "module"
 }

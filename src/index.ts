@@ -6,7 +6,7 @@ import {
 	Option,
 } from 'commander'
 import type { z } from 'zod'
-import utils from './utils'
+import utils from './utils.js'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 

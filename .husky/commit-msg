@@ -1,0 +1,7 @@
+MSG_FILE=$1
+
+if [ "$CI_WIP" = "true" ]; then
+  # Replace whatever comes after '): ' with ':construction: '
+  # Handles both with and without existing emoji
+  sed -i -E 's@(\):)[[:space:]]*(:[^:]+:|[^[:space:]]*)?@): :construction:@' "$MSG_FILE"
+fi
