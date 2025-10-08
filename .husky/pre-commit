@@ -1,5 +1,11 @@
+echo "CI_WIP: $CI_WIP"
+
+if [ "$CI_WIP" = "true" ]; then
+  exit 0
+fi
+
 # Stash unstaged changes (keep index)
-git stash --keep-index --quiet
+git stash --keep-index --quiet --include-untracked
 STASHED=$?
 
 # Function to restore stash and exit with status
@@ -13,10 +19,6 @@ restore_and_exit() {
 
 echo "🏗️  Building project..."
 pnpm build || restore_and_exit $?
-
-# Automatically stage any build output that changed
-echo "➕ Staging build artifacts..."
-git add dist/ || restore_and_exit $?
 
 echo "🔍 Running biome..."
 pnpm biome ci --threads=4 || restore_and_exit $?
