@@ -32,11 +32,11 @@ export type ZodCommandAction<
 > = ZodCommandProps<A, O>['action']
 
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
-	name: string
+	name?: string
 	description?: string
 	args?: A
 	opts?: O
-	action: (
+	action?: (
 		args: Prettify<z.infer<z.ZodObject<A>>>,
 		opts: Prettify<z.infer<z.ZodObject<ReplaceKeyTypes<O>>>>,
 	) => Promise<void> | void
@@ -122,14 +122,15 @@ export const zodCommand = <A extends z.ZodRawShape, O extends z.ZodRawShape>({
 	if (description) command.description(description)
 	for (const key in args) command.addArgument(zodArgument(key, args[key]))
 	for (const key in opts) command.addOption(zodOption(key, opts[key]))
-	command.action(async (...all) => {
-		const resultArgs = Object.fromEntries(
-			Object.keys(args ?? {}).map((key, i) => [key, all[i]]),
-		) as z.infer<z.ZodObject<A>>
-		const resultOpts = all[Object.keys(args ?? {}).length] as z.infer<
-			z.ZodObject<ReplaceKeyTypes<O>>
-		>
-		await action(resultArgs, resultOpts)
-	})
+	if (action)
+		command.action(async (...all) => {
+			const resultArgs = Object.fromEntries(
+				Object.keys(args ?? {}).map((key, i) => [key, all[i]]),
+			) as z.infer<z.ZodObject<A>>
+			const resultOpts = all[Object.keys(args ?? {}).length] as z.infer<
+				z.ZodObject<ReplaceKeyTypes<O>>
+			>
+			await action(resultArgs, resultOpts)
+		})
 	return command
 }
