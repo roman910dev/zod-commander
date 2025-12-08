@@ -223,4 +223,40 @@ describe('options', () => {
 			})
 		})
 	})
+
+	describe('no action', () => {
+		const output: string[] = []
+		const errors: string[] = []
+
+		const description = 'cmd description'
+		const subName = 'sub'
+		const subDescription = 'sub description'
+
+		const command = zodCommand({ name, description })
+			.addCommand(
+				zodCommand({
+					name: subName,
+					description: subDescription,
+					action: action(checker),
+				}),
+			)
+			.configureOutput({
+				writeOut: (str) => output.push(str),
+				writeErr: (str) => errors.push(str),
+			})
+
+		const expectHelp = (help: string) =>
+			[`Usage: ${name}`, description, 'Commands:', subDescription].forEach(
+				(line) => expect(help).to.include(line),
+			)
+
+		test('help', () => expectHelp(command.helpInformation()))
+
+		test('run', () => {
+			expectExit(() => command.parse(['node', name]), 1)
+			expect(output).to.have.length(0)
+			expect(errors).to.have.length(1)
+			expectHelp(errors[0])
+		})
+	})
 })
