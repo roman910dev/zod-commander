@@ -2,5 +2,9 @@
 	"$schema": "https://jsr.io/schema/config-file.v1.json",
 	"name": "@roman910dev/zod-commander",
 	"version": "0.0.5",
-	"exports": "./src/index.ts"
+	"exports": {
+		".": "./src/index.ts",
+		"./zod3": "./src/zod3/index.ts",
+		"./zod4": "./src/zod4/index.ts"
+	}
 }
