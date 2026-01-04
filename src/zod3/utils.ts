@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v3'
 
 const zodCore = <T>(zod: z.ZodTypeAny, fn: (zod: z.ZodTypeAny) => T): T => {
 	const types = [z.ZodDefault, z.ZodNullable, z.ZodOptional]

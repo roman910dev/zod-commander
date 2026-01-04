@@ -1,7 +1,7 @@
 import type { Command } from 'commander'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
-import { zodCommand } from '../../src/index.js'
+import { zodCommand } from '../../src/zod3/index.js'
 import { expectExit } from './utils.js'
 
 const name = 'cmd'

@@ -8,7 +8,7 @@ type Config =
 	  ) => Options | Options[] | Promise<Options | Options[]>)
 
 const config: Config = defineConfig({
-	entry: ['src/index.ts'],
+	entry: ['src/zod3/index.ts'],
 	outDir: 'dist',
 	format: ['esm', 'cjs'],
 	dts: true,

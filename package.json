@@ -29,11 +29,11 @@
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"default": "./dist/index.js"
+		"./zod3": {
+			"types": "./dist/zod3/index.d.ts",
+			"import": "./dist/zod3/index.js",
+			"require": "./dist/zod3/index.cjs",
+			"default": "./dist/zod3/index.js"
 		}
 	},
 	"files": [

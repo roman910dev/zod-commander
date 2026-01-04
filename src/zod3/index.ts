@@ -5,7 +5,7 @@ import {
 	InvalidOptionArgumentError,
 	Option,
 } from 'commander'
-import type { z } from 'zod'
+import type { z } from 'zod/v3'
 import utils from './utils.js'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
