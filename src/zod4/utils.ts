@@ -7,6 +7,7 @@ const zodCore = <T>(
 	const types = [z.ZodDefault, z.ZodNullable, z.ZodOptional]
 	for (const type of types)
 		if (zod instanceof type) return zodCore(zod.def.innerType, fn)
+	if (zod instanceof z.ZodPipe) return zodCore(zod.def.in, fn)
 	return fn(zod)
 }
 
