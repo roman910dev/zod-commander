@@ -46,3 +46,18 @@ program
 - **No boilerplate**: Just export your command; integrate with your CLI runner as needed.
 - **Aliases for options**: If you start a description with a letter and a semicolon (e.g. `"f;The file to export to"`), that letter will be used as a short alias (e.g. `-f`).
 - **Perfect help output**: The generated help text is clear and complete—try running your command with `--help` to see for yourself!
+
+### Zod 4 support
+
+Currently, the package uses zod `v3` by default. Zod version can be specified by importing the appropriate version from the `zod3` or `zod4` submodules.
+
+```ts
+import { zodCommand } from 'zod-commander/zod4'
+// or
+import { zodCommand } from 'zod-commander/zod3' // equivalent to `import { zodCommand } from 'zod-commander'`
+```
+
+In the future, the default version will be changed to zod `v4`.
+
+> [!NOTE]
+> To use `zod-commander/zod4` in the same way as `zod-commander/zod3`, you should use [`.prefault()`](https://zod.dev/v4/changelog#default-updates) instead of `.default()`.
