@@ -40,7 +40,8 @@
 		"dist/"
 	],
 	"imports": {
-		"#/*": "./src/*"
+		"#/*": "./src/*",
+		"#tests/*": "./tests/*"
 	},
 	"scripts": {
 		"build": "tsup",
