@@ -15,14 +15,14 @@
 		"typescript"
 	],
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.6",
+		"@biomejs/biome": "^2.3.11",
 		"@types/node": "^22.16.3",
-		"commander": "^14.0.0",
+		"commander": "^14.0.2",
 		"husky": "^9.1.7",
-		"tsup": "^8.5.0",
-		"typescript": "^5.8.3",
-		"vitest": "^3.2.4",
-		"zod": "^3.25.0"
+		"tsup": "^8.5.1",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.16",
+		"zod": "^4.3.5"
 	},
 	"packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
 	"main": "./dist/index.cjs",
@@ -30,17 +30,30 @@
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
-			"default": "./dist/index.js"
+			"types": "./dist/zod3/index.d.ts",
+			"import": "./dist/zod3/index.js",
+			"require": "./dist/zod3/index.cjs",
+			"default": "./dist/zod3/index.js"
+		},
+		"./zod3": {
+			"types": "./dist/zod3/index.d.ts",
+			"import": "./dist/zod3/index.js",
+			"require": "./dist/zod3/index.cjs",
+			"default": "./dist/zod3/index.js"
+		},
+		"./zod4": {
+			"types": "./dist/zod4/index.d.ts",
+			"import": "./dist/zod4/index.js",
+			"require": "./dist/zod4/index.cjs",
+			"default": "./dist/zod4/index.js"
 		}
 	},
 	"files": [
 		"dist/"
 	],
 	"imports": {
-		"#/*": "./src/*"
+		"#/*": "./src/*",
+		"#tests/*": "./tests/*"
 	},
 	"scripts": {
 		"build": "tsup",
@@ -60,7 +73,7 @@
 	},
 	"peerDependencies": {
 		"commander": ">=8 <15",
-		"zod": ">=3.20.0 <4"
+		"zod": ">=3.20.0 <5"
 	},
 	"type": "module"
 }

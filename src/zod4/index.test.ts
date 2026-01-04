@@ -1,8 +1,8 @@
 import type { Command } from 'commander'
 import { describe, expect, test } from 'vitest'
-import { z } from 'zod'
-import { zodCommand } from '../../src/index.js'
-import { expectExit } from './utils.js'
+import { z } from 'zod/v4'
+import { expectExit } from '#tests/utils.js'
+import { zodCommand } from './index.js'
 
 const name = 'cmd'
 
@@ -110,10 +110,33 @@ describe('options', () => {
 		})
 	})
 
+	describe('default number', () => {
+		const stringNum = z.string().transform(Number).pipe(z.number())
+		const command = zodCommand({
+			name,
+			opts: { number: stringNum.prefault('910').describe('Number') },
+			action: action(checker),
+		})
+
+		test('help', () =>
+			expect(getOptHelp(command, 'number')).toBe('Number (default: 910)'))
+
+		describe('parse', () => {
+			test('default', () => {
+				command.parse(['node', name])
+				expect(checker.opts).toEqual({ number: 910 })
+			})
+			test('present value', () => {
+				command.parse(['node', name, '--number', '911'])
+				expect(checker.opts).toEqual({ number: 911 })
+			})
+		})
+	})
+
 	describe('flag', () => {
 		const command = zodCommand({
 			name,
-			opts: { flag: z.boolean().default(false).describe('Flag') },
+			opts: { flag: z.boolean().prefault(false).describe('Flag') },
 			action: action(checker),
 		})
 
@@ -247,7 +270,9 @@ describe('options', () => {
 
 		const expectHelp = (help: string) =>
 			[`Usage: ${name}`, description, 'Commands:', subDescription].forEach(
-				(line) => expect(help).to.include(line),
+				(line) => {
+					expect(help).to.include(line)
+				},
 			)
 
 		test('help', () => expectHelp(command.helpInformation()))

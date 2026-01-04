@@ -5,7 +5,7 @@ import {
 	InvalidOptionArgumentError,
 	Option,
 } from 'commander'
-import type { z } from 'zod'
+import type { z } from 'zod/v4'
 import utils from './utils.js'
 
 type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
@@ -20,18 +20,21 @@ type Prettify<T> = {
 
 /**
  * The action function signature for a Zod-powered command.
- * @template A - ZodRawShape for arguments
- * @template O - ZodRawShape for options
+ * @template A - Record of key-value pairs where key is the argument name and value is the Zod schema
+ * @template O - Record of key-value pairs where key is the option name and value is the Zod schema
  * @param args - Parsed and validated arguments
  * @param opts - Parsed and validated options (with key normalization)
  * @returns A Promise or void
  */
 export type ZodCommandAction<
-	A extends z.ZodRawShape,
-	O extends z.ZodRawShape,
+	A extends Record<string, z.ZodType>,
+	O extends Record<string, z.ZodType>,
 > = ZodCommandProps<A, O>['action']
 
-type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
+type ZodCommandProps<
+	A extends Record<string, z.ZodType>,
+	O extends Record<string, z.ZodType>,
+> = {
 	name?: string
 	description?: string
 	args?: A
@@ -42,7 +45,7 @@ type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
 	) => Promise<void> | void
 }
 
-const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
+const zodParser = (zod: z.ZodType, opt?: 'opt') => (value: string) => {
 	const result = zod.safeParse(value)
 	if (result.success) return result.data
 	const msg = result.error.issues[0].message
@@ -57,14 +60,14 @@ const zodParser = (zod: z.ZodTypeAny, opt?: 'opt') => (value: string) => {
  * @param zod - The Zod schema for the argument
  * @returns A Commander Argument instance
  */
-export const zodArgument = (key: string, zod: z.ZodTypeAny): Argument => {
-	const flag = zod.isOptional() ? `[${key}]` : `<${key}>`
+export const zodArgument = (key: string, zod: z.ZodType): Argument => {
+	const flag = utils.zodIsOptional(zod) ? `[${key}]` : `<${key}>`
 	const arg = new Argument(flag, zod.description)
 
 	const def = utils.zodDefault(zod)
 	if (def !== undefined) arg.default(zod.parse(def))
 
-	const choices = utils.zodEnumVals(zod)
+	const choices = utils.zodEnumVals(zod)?.map(String)
 	if (choices) arg.choices(choices)
 
 	// parsing must be done at the end to override default parsers
@@ -79,9 +82,9 @@ export const zodArgument = (key: string, zod: z.ZodTypeAny): Argument => {
  * @param zod - The Zod schema for the option
  * @returns A Commander Option instance
  */
-export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
+export const zodOption = (key: string, zod: z.ZodType): Option => {
 	const abbr = zod.description?.match(/^(\w);/)?.[1]
-	const description = abbr ? zod.description.slice(2) : zod.description
+	const description = abbr ? zod.description?.slice(2) : zod.description
 	const arg = key.includes('_') ? key.split('_').slice(1).join('-') : key
 	if (key.includes('_')) [key] = key.split('_')
 	const isBoolean = utils.zodIsBoolean(zod)
@@ -91,12 +94,12 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 
 	// required for boolean flags
 	if (isBoolean) opt.optional = true
-	else if (!zod.isOptional()) opt.makeOptionMandatory()
+	else if (!utils.zodIsOptional(zod)) opt.makeOptionMandatory()
 
 	const def = utils.zodDefault(zod)
 	if (def !== undefined) opt.default(zod.parse(def))
 
-	const choices = utils.zodEnumVals(zod)
+	const choices = utils.zodEnumVals(zod)?.map(String)
 	if (choices) opt.choices(choices)
 
 	// parsing must be done at the end to override default parsers
@@ -106,12 +109,15 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
 /**
  * Defines a Commander.js Command using Zod schemas for arguments and options.
  * Automatically wires up parsing, validation, and help configuration.
- * @template A - ZodRawShape for arguments
- * @template O - ZodRawShape for options
+ * @template A - Record of key-value pairs where key is the argument name and value is the Zod schema
+ * @template O - Record of key-value pairs where key is the option name and value is the Zod schema
  * @param props - Command properties (name, description, args, opts, action)
  * @returns A Commander Command instance
  */
-export const zodCommand = <A extends z.ZodRawShape, O extends z.ZodRawShape>({
+export const zodCommand = <
+	A extends Record<string, z.ZodType>,
+	O extends Record<string, z.ZodType>,
+>({
 	name,
 	description,
 	args,
