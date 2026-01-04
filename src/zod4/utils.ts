@@ -4,7 +4,7 @@ const zodCore = <T>(
 	zod: z.core.$ZodType,
 	fn: (zod: z.core.$ZodType) => T,
 ): T => {
-	const types = [z.ZodDefault, z.ZodNullable, z.ZodOptional]
+	const types = [z.ZodDefault, z.ZodPrefault, z.ZodNullable, z.ZodOptional]
 	for (const type of types)
 		if (zod instanceof type) return zodCore(zod.def.innerType, fn)
 	if (zod instanceof z.ZodPipe) return zodCore(zod.def.in, fn)
@@ -25,7 +25,7 @@ const zodDefault = <Output, Input>(
 ): Input | undefined =>
 	zod instanceof z.ZodPipe
 		? zodDefault(zod.def.in as z.ZodType<unknown, Input>)
-		: zod instanceof z.ZodDefault
+		: zod instanceof z.ZodPrefault
 			? (zod.def.defaultValue as Input)
 			: undefined
 
