@@ -247,7 +247,9 @@ describe('options', () => {
 
 		const expectHelp = (help: string) =>
 			[`Usage: ${name}`, description, 'Commands:', subDescription].forEach(
-				(line) => expect(help).to.include(line),
+				(line) => {
+					expect(help).to.include(line)
+				},
 			)
 
 		test('help', () => expectHelp(command.helpInformation()))

@@ -1,6 +1,6 @@
 import type { Command } from 'commander'
 import { describe, expect, test } from 'vitest'
-import { z } from 'zod'
+import { z } from 'zod/v3'
 import { expectExit } from '#tests/utils.js'
 import { zodCommand } from './index.js'
 
@@ -247,7 +247,9 @@ describe('options', () => {
 
 		const expectHelp = (help: string) =>
 			[`Usage: ${name}`, description, 'Commands:', subDescription].forEach(
-				(line) => expect(help).to.include(line),
+				(line) => {
+					expect(help).to.include(line)
+				},
 			)
 
 		test('help', () => expectHelp(command.helpInformation()))
