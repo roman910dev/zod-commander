@@ -6,17 +6,12 @@ import {
 	Option,
 } from 'commander'
 import type { z } from 'zod/v4'
+import type { BeforeFirstUnderscore, Prettify } from '#/common.js'
 import utils from './utils.js'
-
-type BeforeFirstUnderscore<S> = S extends `${infer T}_${infer _}` ? T : S
 
 type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
-
-type Prettify<T> = {
-	[K in keyof T]: T[K]
-} & {}
 
 /**
  * The action function signature for a Zod-powered command.
