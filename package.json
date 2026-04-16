@@ -19,7 +19,7 @@
 		"@types/node": "^22.16.3",
 		"commander": "^14.0.3",
 		"husky": "^9.1.7",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.21.9",
 		"typescript": "^5.9.3",
 		"vitest": "^4.1.4",
 		"zod": "^4.3.6"
@@ -56,7 +56,7 @@
 		"#tests/*": "./tests/*"
 	},
 	"scripts": {
-		"build": "tsup",
+		"build": "tsdown",
 		"check": "biome check .",
 		"fix": "biome check . --write",
 		"format": "biome format . --write",
