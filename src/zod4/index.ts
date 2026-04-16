@@ -9,6 +9,8 @@ import type { z } from 'zod/v4'
 import type { BeforeFirstUnderscore, Prettify } from '#/common.js'
 import utils from './utils.js'
 
+export type { Argument, Command, Option } from 'commander'
+
 type ReplaceKeyTypes<Type extends z.ZodRawShape> = {
 	[Key in keyof Type as BeforeFirstUnderscore<Key>]: Type[Key]
 }
