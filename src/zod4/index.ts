@@ -1,3 +1,8 @@
+/**
+ * Utilities for building type-safe Commander commands using Zod schemas.
+ * @module
+ */
+
 import {
 	Argument,
 	Command,
