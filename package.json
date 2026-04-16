@@ -30,22 +30,22 @@
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/zod3/index.d.ts",
-			"import": "./dist/zod3/index.js",
+			"types": "./dist/zod3/index.d.mts",
+			"import": "./dist/zod3/index.mjs",
 			"require": "./dist/zod3/index.cjs",
-			"default": "./dist/zod3/index.js"
+			"default": "./dist/zod3/index.mjs"
 		},
 		"./zod3": {
-			"types": "./dist/zod3/index.d.ts",
-			"import": "./dist/zod3/index.js",
+			"types": "./dist/zod3/index.d.mts",
+			"import": "./dist/zod3/index.mjs",
 			"require": "./dist/zod3/index.cjs",
-			"default": "./dist/zod3/index.js"
+			"default": "./dist/zod3/index.mjs"
 		},
 		"./zod4": {
-			"types": "./dist/zod4/index.d.ts",
-			"import": "./dist/zod4/index.js",
+			"types": "./dist/zod4/index.d.mts",
+			"import": "./dist/zod4/index.mjs",
 			"require": "./dist/zod4/index.cjs",
-			"default": "./dist/zod4/index.js"
+			"default": "./dist/zod4/index.mjs"
 		}
 	},
 	"files": [
