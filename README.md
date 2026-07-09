@@ -42,7 +42,7 @@ program
 - **Type-safe arguments and options**: Use zod schemas to define and validate CLI inputs.
 - **Booleans are treated as flags**: Any boolean option automatically becomes a CLI flag (e.g. `--excited`).
 - **Descriptive help**: `.describe()` on schemas provides help text for each argument/option.
-- **Default values**: Use `.default()` on zod schemas for default option values.
+- **Default values**: Use `.prefault()` (`.default()` for zod `v3`) on zod schemas for default option values.
 - **Async actions**: The `action` function can be async and receives parsed args and opts.
 - **No boilerplate**: Just export your command; integrate with your CLI runner as needed.
 - **Aliases for options**: If you start a description with a letter and a semicolon (e.g. `"f;The file to export to"`), that letter will be used as a short alias (e.g. `-f`).
