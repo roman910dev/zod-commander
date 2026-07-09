@@ -14,6 +14,7 @@ import { zodCommand } from 'zod-commander'
 // Define a command using zodCommand
 const greet = zodCommand({
   name: 'greet',
+  summary: 'Say hello',
   description: 'Say hello to someone',
   args: {
     name: z.string().describe('Name of the person to greet'),
