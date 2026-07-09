@@ -20,7 +20,7 @@ const greet = zodCommand({
     name: z.string().describe('Name of the person to greet'),
   },
   opts: {
-    excited: z.boolean().default(false).describe('e;Add an exclamation mark'), // 'e;' makes -e an alias
+    excited: z.boolean().prefault(false).describe('e;Add an exclamation mark'), // 'e;' makes -e an alias
   },
   async action({ name }, { excited }) {
     console.log(`Hello, ${name}${excited ? '!' : '.'}`)
@@ -42,23 +42,21 @@ program
 - **Type-safe arguments and options**: Use zod schemas to define and validate CLI inputs.
 - **Booleans are treated as flags**: Any boolean option automatically becomes a CLI flag (e.g. `--excited`).
 - **Descriptive help**: `.describe()` on schemas provides help text for each argument/option.
-- **Default values**: Use `.default()` on zod schemas for default option values.
+- **Default values**: Use `.prefault()` (`.default()` for zod `v3`) on zod schemas for default option values.
 - **Async actions**: The `action` function can be async and receives parsed args and opts.
 - **No boilerplate**: Just export your command; integrate with your CLI runner as needed.
 - **Aliases for options**: If you start a description with a letter and a semicolon (e.g. `"f;The file to export to"`), that letter will be used as a short alias (e.g. `-f`).
 - **Perfect help output**: The generated help text is clear and complete—try running your command with `--help` to see for yourself!
 
-### Zod 4 support
+> [!NOTE]
+> When using zod `v4`, you will usually want to use [`.prefault()`](https://zod.dev/v4/changelog#default-updates) instead of `.default()`.
 
-Currently, the package uses zod `v3` by default. Zod version can be specified by importing the appropriate version from the `zod3` or `zod4` submodules.
+### Zod 3 support
+
+The package uses zod `v4` by default. Zod version can be specified by importing the appropriate version from the `zod3` or `zod4` submodules.
 
 ```ts
-import { zodCommand } from 'zod-commander/zod4'
+import { zodCommand } from 'zod-commander/zod4' // equivalent to `import { zodCommand } from 'zod-commander'`
 // or
-import { zodCommand } from 'zod-commander/zod3' // equivalent to `import { zodCommand } from 'zod-commander'`
+import { zodCommand } from 'zod-commander/zod3'
 ```
-
-In the future, the default version will be changed to zod `v4`.
-
-> [!NOTE]
-> To use `zod-commander/zod4` in the same way as `zod-commander/zod3`, you should use [`.prefault()`](https://zod.dev/v4/changelog#default-updates) instead of `.default()`.
