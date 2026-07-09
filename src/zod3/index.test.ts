@@ -230,13 +230,24 @@ describe('options', () => {
 
 		const description = 'cmd description'
 		const subName = 'sub'
+		const subSummary = 'sub summary'
 		const subDescription = 'sub description'
+		const fallbackSubName = 'fallback-sub'
+		const fallbackSubDescription = 'fallback sub description'
 
 		const command = zodCommand({ name, description })
 			.addCommand(
 				zodCommand({
 					name: subName,
+					summary: subSummary,
 					description: subDescription,
+					action: action(checker),
+				}),
+			)
+			.addCommand(
+				zodCommand({
+					name: fallbackSubName,
+					description: fallbackSubDescription,
 					action: action(checker),
 				}),
 			)
@@ -246,11 +257,15 @@ describe('options', () => {
 			})
 
 		const expectHelp = (help: string) =>
-			[`Usage: ${name}`, description, 'Commands:', subDescription].forEach(
-				(line) => {
-					expect(help).to.include(line)
-				},
-			)
+			[
+				`Usage: ${name}`,
+				description,
+				'Commands:',
+				`${subName}             ${subSummary}`,
+				`${fallbackSubName}    ${fallbackSubDescription}`,
+			].forEach((line) => {
+				expect(help).to.include(line)
+			})
 
 		test('help', () => expectHelp(command.helpInformation()))
 

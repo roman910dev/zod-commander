@@ -35,6 +35,7 @@ export type ZodCommandAction<
 
 type ZodCommandProps<A extends z.ZodRawShape, O extends z.ZodRawShape> = {
 	name?: string
+	summary?: string
 	description?: string
 	args?: A
 	opts?: O
@@ -110,17 +111,19 @@ export const zodOption = (key: string, zod: z.ZodTypeAny): Option => {
  * Automatically wires up parsing, validation, and help configuration.
  * @template A - ZodRawShape for arguments
  * @template O - ZodRawShape for options
- * @param props - Command properties (name, description, args, opts, action)
+ * @param props - Command properties (name, summary, description, args, opts, action)
  * @returns A Commander Command instance
  */
 export const zodCommand = <A extends z.ZodRawShape, O extends z.ZodRawShape>({
 	name,
+	summary,
 	description,
 	args,
 	opts,
 	action,
 }: ZodCommandProps<A, O>): Command => {
 	const command = new Command(name)
+	if (summary) command.summary(summary)
 	if (description) command.description(description)
 	for (const key in args) command.addArgument(zodArgument(key, args[key]))
 	for (const key in opts) command.addOption(zodOption(key, opts[key]))
