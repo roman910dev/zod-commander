@@ -30,10 +30,10 @@
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/zod3/index.d.mts",
-			"import": "./dist/zod3/index.mjs",
-			"require": "./dist/zod3/index.cjs",
-			"default": "./dist/zod3/index.mjs"
+			"types": "./dist/zod4/index.d.mts",
+			"import": "./dist/zod4/index.mjs",
+			"require": "./dist/zod4/index.cjs",
+			"default": "./dist/zod4/index.mjs"
 		},
 		"./zod3": {
 			"types": "./dist/zod3/index.d.mts",
