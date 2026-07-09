@@ -73,7 +73,7 @@
 		"access": "public"
 	},
 	"peerDependencies": {
-		"commander": ">=8 <15",
+		"commander": ">=8 <16",
 		"zod": ">=3.20.0 <5"
 	},
 	"type": "module"
