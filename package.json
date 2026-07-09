@@ -15,14 +15,14 @@
 		"typescript"
 	],
 	"devDependencies": {
-		"@biomejs/biome": "^2.4.12",
-		"@types/node": "^22.16.3",
-		"commander": "^14.0.3",
+		"@biomejs/biome": "^2.5.3",
+		"@types/node": "^24.13.3",
+		"commander": "^15.0.0",
 		"husky": "^9.1.7",
-		"tsdown": "^0.21.9",
-		"typescript": "^6.0.2",
-		"vitest": "^4.1.4",
-		"zod": "^4.3.6"
+		"tsdown": "^0.22.4",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.10",
+		"zod": "^4.4.3"
 	},
 	"packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
 	"main": "./dist/index.cjs",
