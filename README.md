@@ -1,62 +1,110 @@
 # zod-commander
 
-A TypeScript utility for building type-safe CLI commands using [commander](https://www.npmjs.com/package/commander) and [zod](https://www.npmjs.com/package/zod).
+Build type-safe command-line interfaces (CLIs) from [Zod](https://zod.dev/) schemas using [Commander](https://github.com/tj/commander.js), with input validation, inferred action types, and generated help. `zodCommand()` returns a Commander `Command`, so all Commander methods work on the result.
+
+## Installation
+
+```sh
+npm install zod-commander zod
+```
 
 ## Usage
 
-`zod-commander` lets you define type-safe CLI commands using [zod](https://github.com/colinhacks/zod) schemas for arguments and options, with a simple API.
-
 ```ts
-import { Command } from 'commander'
+// cli.ts
 import { z } from 'zod'
 import { zodCommand } from 'zod-commander'
 
-// Define a command using zodCommand
 const greet = zodCommand({
   name: 'greet',
   summary: 'Say hello',
-  description: 'Say hello to someone',
+  description: 'Greet someone, optionally with a title and repeated greetings.',
   args: {
     name: z.string().describe('Name of the person to greet'),
   },
   opts: {
-    excited: z.boolean().prefault(false).describe('e;Add an exclamation mark'), // 'e;' makes -e an alias
+    title: z.string().optional().describe('t;Title to put before the name'),
+    repeat: z.coerce.number().int().min(1).prefault(1)
+      .describe('r;Number of greetings'),
+    excited: z.boolean().prefault(false).describe('e;Add an exclamation mark'),
   },
-  async action({ name }, { excited }) {
-    console.log(`Hello, ${name}${excited ? '!' : '.'}`)
+  action({ name }, { title, repeat, excited }) {
+    // Types are inferred: name is string, title is string | undefined,
+    // repeat is number, and excited is boolean.
+    const recipient = title ? `${title} ${name}` : name
+    for (let i = 0; i < repeat; i++) {
+      console.log(`Hello, ${recipient}${excited ? '!' : '.'}`)
+    }
   },
 })
 
-// Create a CLI program and add the command
-const program = new Command()
-program
-  .name('my-cli')
-  .description('A demo CLI using zod-commander')
-  .version('1.0.0')
-  .addCommand(greet)
-  .parseAsync(process.argv)
+await greet.parseAsync(process.argv)
 ```
 
-### Features
+```sh
+node cli.ts Alice
+# Hello, Alice.
 
-- **Type-safe arguments and options**: Use zod schemas to define and validate CLI inputs.
-- **Booleans are treated as flags**: Any boolean option automatically becomes a CLI flag (e.g. `--excited`).
-- **Descriptive help**: `.describe()` on schemas provides help text for each argument/option.
-- **Default values**: Use `.prefault()` (`.default()` for zod `v3`) on zod schemas for default option values.
-- **Async actions**: The `action` function can be async and receives parsed args and opts.
-- **No boilerplate**: Just export your command; integrate with your CLI runner as needed.
-- **Aliases for options**: If you start a description with a letter and a semicolon (e.g. `"f;The file to export to"`), that letter will be used as a short alias (e.g. `-f`).
-- **Perfect help output**: The generated help text is clear and complete—try running your command with `--help` to see for yourself!
+node cli.ts Alice --title Dr --repeat 2 --excited
+# Hello, Dr Alice!
+# Hello, Dr Alice!
 
-> [!NOTE]
-> When using zod `v4`, you will usually want to use [`.prefault()`](https://zod.dev/v4/changelog#default-updates) instead of `.default()`.
+node cli.ts Alice -t Dr -r 2 -e
+# Hello, Dr Alice!
+# Hello, Dr Alice!
+```
 
-### Zod 3 support
+`node cli.ts --help` produces:
 
-The package uses zod `v4` by default. Zod version can be specified by importing the appropriate version from the `zod3` or `zod4` submodules.
+```text
+Usage: greet [options] <name>
+
+Greet someone, optionally with a title and repeated greetings.
+
+Arguments:
+  name                   Name of the person to greet
+
+Options:
+  -t, --title <title>    Title to put before the name
+  -r, --repeat <repeat>  Number of greetings (default: 1)
+  -e, --excited          Add an exclamation mark (default: false)
+  -h, --help             display help for command
+```
+
+## How schemas map to CLI inputs
+
+- **Arguments and options:** `args` defines positional arguments in key order; `opts` defines named options. Inputs are required unless their schema accepts `undefined`, such as with `.optional()` or `.prefault()`. Boolean options become flags.
+- **Parsing and validation:** CLI values arrive as strings. Use coercion or transforms for other types, as with `z.coerce.number()` above. Zod validation failures become Commander input errors. Enum schemas also expose their choices in help.
+- **Defaults:** Use `.prefault()` with Zod 4. The package parses the prefault through the schema and registers the result as a Commander default. Zod 4's `.default()` is not extracted into a CLI default.
+- **Descriptions and aliases:** `.describe()` supplies help text. Prefix any option description with a letter and a semicolon, such as `'r;Number of greetings'`, to add a short alias. The prefix is removed from help.
+- **Actions:** `action` receives named argument and option objects with schema-inferred types. It can be synchronous or asynchronous.
+
+## Commander integration
+
+`zodCommand()` returns a Commander `Command`. You can call Commander methods on it and add it to a regular Commander program. All `zodCommand()` properties are optional, so it can also build a root program.
+
+Using `greet` from above as a subcommand, the parent program handles parsing instead of `greet`:
 
 ```ts
-import { zodCommand } from 'zod-commander/zod4' // equivalent to `import { zodCommand } from 'zod-commander'`
-// or
+import { Command } from 'commander'
+
+// Using the greet command defined above.
+greet.alias('hello')
+
+const program = new Command()
+  .name('my-cli')
+  .addCommand(greet)
+
+await program.parseAsync(process.argv)
+```
+
+See the [Commander documentation](https://github.com/tj/commander.js#readme) for command composition, parsing, and customization.
+
+## Zod 3 support
+
+The default entry point uses Zod 4. For Zod 3, use the `/zod3` entry point and `.default()` instead of `.prefault()`:
+
+```ts
+import { z } from 'zod'
 import { zodCommand } from 'zod-commander/zod3'
 ```
